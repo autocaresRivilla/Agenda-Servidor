@@ -6,6 +6,7 @@ use App\Http\Controllers\Libro as ControllersLibro;
 use App\Models\Aviso as ModelsAviso;
 use App\Models\AvisoCoches;
 use App\Models\AvisoConductores;
+use App\Models\AvisoHistorico;
 use App\Models\Cliente;
 use App\Models\Coche;
 use App\Models\Conductor;
@@ -144,6 +145,15 @@ class Aviso extends Controller
             return response()->noContent(406);
         }
     }
+    public function getHistorico(Request $request, $id)
+    {
+        $data = AvisoHistorico::where("id",$id)->first();
+        if($data) {
+            $data->coches=explode("##",$data->coches);
+            return response()->json($data,200);
+        }
+        else return response()->noContent(406);
+    }
     /**
      * Recupera información de las entradas de la base de datos
      * @param Integer $id identificador de la entrada
@@ -243,6 +253,7 @@ class Aviso extends Controller
         if (isset($request['respuesta'])) $data['respuesta'] = $request['respuesta'];
         if (isset($request['respuestaFecha'])) $data['respuestaFecha'] = $request['respuestaFecha'];
         if (isset($request['respuestaDetalle'])) $data['respuestaDetalle'] = $request['respuestaDetalle'];
+        if (isset($request['fecha_aviso'])) $data['fecha_aviso'] = $request['fecha_aviso'];
         return $data;
     }
     /**
